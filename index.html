@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لو خيّروك؟ — التحدي النهائي الشامل 🔥</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151e32;
+      --primary-a: #ef4444;
+      --primary-b: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #f59e0b;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; overflow-x: hidden; }
+    .container { width: 100%; max-width: 500px; position: relative; }
+    
+    /* Screen Shake */
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      20%, 60% { transform: translate(-4px, 2px); }
+      40%, 80% { transform: translate(4px, -2px); }
+    }
+    .shaking { animation: shake 0.35s ease-in-out; }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 14px; }
+    .header h1 { font-size: 2.1rem; font-weight: 900; background: linear-gradient(135deg, #ef4444, #f59e0b, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .top-actions { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
+    .nav-btn { background: #1f2937; border: 1px solid #374151; color: var(--accent); padding: 5px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+
+    /* Duel Banner */
+    .duel-banner { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(59,130,246,0.2)); border: 1px solid var(--accent); border-radius: 14px; padding: 8px 12px; margin-bottom: 12px; text-align: center; font-size: 0.85rem; font-weight: 700; color: #fbbf24; }
+
+    /* Modes Selection */
+    .modes-grid { display: grid; gap: 10px; margin-top: 12px; }
+    .mode-btn { background: var(--card-bg); border: 2px solid #22314d; padding: 16px; border-radius: 16px; color: var(--text); cursor: pointer; text-align: right; transition: all 0.2s ease; }
+    .mode-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .mode-btn h3 { font-size: 1.05rem; margin-bottom: 4px; }
+    .mode-btn p { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Game Screen HUD */
+    .game-box { display: none; }
+    .hud-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 10px; background: #111827; padding: 8px 12px; border-radius: 14px; border: 1px solid #1f2937; }
+    .score-badge { font-weight: 900; font-size: 0.85rem; color: var(--accent); }
+    
+    /* 20s Timer */
+    .timer-wrap { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+    .timer-svg { width: 44px; height: 44px; transform: rotate(-90deg); }
+    .timer-circle-bg { fill: none; stroke: #374151; stroke-width: 4; }
+    .timer-circle { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 113; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+    .timer-text { position: absolute; font-size: 0.95rem; font-weight: 900; color: #fff; }
+
+    /* Rebel vs Sheep Meter */
+    .rebel-meter-wrap { margin-bottom: 10px; background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 6px 10px; }
+    .rebel-header { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .rebel-bar { width: 100%; height: 6px; background: #374151; border-radius: 999px; overflow: hidden; display: flex; }
+    .rebel-fill-sheep { background: #38bdf8; width: 50%; transition: width 0.4s ease; }
+    .rebel-fill-wolf { background: #f43f5e; width: 50%; transition: width 0.4s ease; }
+
+    /* Double Down Bet */
+    .bet-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(245, 158, 11, 0.1); border: 1px dashed var(--accent); border-radius: 12px; padding: 6px 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+    .bet-toggle.active { background: var(--accent); color: #000; font-weight: 900; border-style: solid; }
+    .bet-toggle span { font-size: 0.8rem; font-weight: 700; }
+
+    /* Cards */
+    .cards-container { display: flex; flex-direction: column; gap: 10px; }
+    .choice-card-wrapper { display: flex; gap: 8px; align-items: stretch; }
+    
+    .choice-card {
+      position: relative; flex: 1; border-radius: 16px; padding: 16px 14px;
+      cursor: pointer; transition: transform 0.15s ease, border-color 0.2s;
+      overflow: hidden; min-height: 90px; display: flex; flex-direction: column;
+      justify-content: center; border: 2px solid transparent; text-align: right;
+    }
+    .choice-card:active { transform: scale(0.98); }
+    .card-a { background: linear-gradient(135deg, rgba(239,68,68,0.22), rgba(239,68,68,0.06)); border-color: rgba(239,68,68,0.4); }
+    .card-b { background: linear-gradient(135deg, rgba(59,130,246,0.22), rgba(59,130,246,0.06)); border-color: rgba(59,130,246,0.4); }
+    .card-text { font-size: 1.05rem; font-weight: 700; position: relative; z-index: 2; line-height: 1.4; }
+    
+    /* Mystery Box */
+    .mystery-card { filter: blur(5px); user-select: none; transition: filter 0.4s ease; }
+    .mystery-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 900; color: #fbbf24; gap: 6px; }
+
+    .predict-badge-btn {
+      background: var(--card-bg); border: 2px dashed #475569; border-radius: 16px;
+      padding: 0 10px; color: var(--text-muted); cursor: pointer; display: flex;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      font-size: 0.75rem; font-weight: 700; transition: all 0.2s ease; min-width: 68px;
+    }
+    .predict-badge-btn.selected { background: rgba(245, 158, 11, 0.25); border-color: var(--accent); color: var(--accent); }
+
+    .percentage-bar { position: absolute; top: 0; bottom: 0; right: 0; width: 0%; z-index: 1; transition: width 0.8s cubic-bezier(0.1, 0.9, 0.2, 1); opacity: 0.4; }
+    .card-a .percentage-bar { background-color: var(--primary-a); }
+    .card-b .percentage-bar { background-color: var(--primary-b); }
+    .percent-label { font-size: 1.5rem; font-weight: 900; position: absolute; left: 14px; bottom: 8px; z-index: 2; display: none; }
+    .vs-badge { align-self: center; background: #1f2937; font-size: 0.75rem; font-weight: 900; padding: 3px 8px; border-radius: 999px; color: var(--text-muted); }
+
+    /* Micro-Comments */
+    .comments-section { display: none; margin-top: 10px; background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 10px; }
+    .comments-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    .comment-bubble { background: #1e293b; padding: 6px 10px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 6px; }
+    .comment-input-row { display: flex; gap: 6px; margin-top: 6px; }
+    .comment-input-row input { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; color: #fff; font-size: 0.8rem; }
+    .comment-input-row button { background: var(--accent); border: none; border-radius: 8px; padding: 0 12px; font-weight: 700; cursor: pointer; }
+
+    .next-btn { display: none; width: 100%; margin-top: 12px; padding: 14px; border-radius: 14px; background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; font-size: 1rem; }
+
+    /* Result Box */
+    .result-box { display: none; background: var(--card-bg); border: 2px solid #22314d; border-radius: 20px; padding: 22px; text-align: center; }
+    .personality-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; color: var(--accent); }
+    .summary-text { font-size: 0.9rem; line-height: 1.6; margin: 12px 0; color: #cbd5e1; text-align: right; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; }
+    .pill { display: block; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; margin: 6px 0; text-align: right; }
+    
+    .lb-submit-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-top: 12px; text-align: right; }
+    .lb-submit-box input { width: 100%; padding: 8px 12px; background: #0b0f19; border: 1px solid #334155; border-radius: 8px; color: #fff; margin: 6px 0; }
+    .lb-submit-btn { width: 100%; background: var(--accent); color: #000; font-weight: 900; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+
+    .action-btn { width: 100%; color: #fff; border: none; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 700; margin-top: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .duel-share-btn { background: linear-gradient(135deg, #ef4444, #f59e0b); }
+    .whatsapp-btn { background: #22c55e; }
+    .restart-btn { background: transparent; color: var(--text-muted); border: 1px solid #334155; }
+
+    /* Modals */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; z-index: 99; }
+    .modal-content { background: var(--card-bg); width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; border: 1px solid #334155; max-height: 80vh; overflow-y: auto; }
+    .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid #1f2937; font-size: 0.9rem; }
+    .leaderboard-rank { font-weight: 900; color: var(--accent); width: 24px; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+  <div class="header">
+    <h1>لو خيّروك؟ 🔥</h1>
+    <p>تحدي الأنتيم، الفراسة، وتحليل الشخصية</p>
+    <div class="top-actions">
+      <button class="nav-btn" onclick="openLeaderboardModal()">🏆 لوحة الصدارة</button>
+      <button class="nav-btn" onclick="openSuggestModal()">💡 اقترح سؤال</button>
+    </div>
+  </div>
+
+  <div id="duel-info" class="duel-banner" style="display:none;"></div>
+
+  <!-- Screen 1: Modes -->
+  <div id="modes-screen">
+    <div class="modes-grid">
+      <div class="mode-btn" onclick="startGame('funny')">
+        <h3>🟢 المود الخفيف والكوميدي</h3>
+        <p>خيارات مجنونة وقدرات خارقة وسفر عبر الزمن</p>
+      </div>
+      <div class="mode-btn" onclick="startGame('friends')">
+        <h3>🟡 مود العلاقات والمواقف المحرجة</h3>
+        <p>مواقف صعبة تكشف أسرارك مع الناس والصحاب</p>
+      </div>
+      <div class="mode-btn" onclick="startGame('extreme')">
+        <h3>🔴 مود مستحيل تختار (Extreme)</h3>
+        <p>قرارات مصيرية مفيهاش هروب ولا حل وسط</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Game Board -->
+  <div id="game-screen" class="game-box">
+    <!-- HUD -->
+    <div class="hud-bar">
+      <div>
+        <div style="font-size: 0.7rem; color: var(--text-muted);">السؤال</div>
+        <div id="question-counter" style="font-weight: 900;">1 / 10</div>
+      </div>
+      
+      <!-- 20s Panic Timer -->
+      <div class="timer-wrap">
+        <svg class="timer-svg">
+          <circle class="timer-circle-bg" cx="22" cy="22" r="18"></circle>
+          <circle id="timer-circle" class="timer-circle" cx="22" cy="22" r="18"></circle>
+        </svg>
+        <span id="timer-text" class="timer-text">20</span>
+      </div>
+
+      <div style="text-align: left;">
+        <div style="font-size: 0.7rem; color: var(--text-muted);">النقاط</div>
+        <div id="score-counter" class="score-badge">0 🎯</div>
+      </div>
+    </div>
+
+    <!-- Live Rebel vs Sheep Meter -->
+    <div class="rebel-meter-wrap">
+      <div class="rebel-header">
+        <span id="sheep-label">🐑 ماشي مع الناس: 50%</span>
+        <span id="wolf-label">🐺 متمرد: 50%</span>
+      </div>
+      <div class="rebel-bar">
+        <div id="sheep-fill" class="rebel-fill-sheep"></div>
+        <div id="wolf-fill" class="rebel-fill-wolf"></div>
+      </div>
+    </div>
+
+    <!-- Double Down Bet -->
+    <div id="bet-btn" class="bet-toggle" onclick="toggleBet()">
+      <span>🎲 رهان مضاعف (Double Down)</span>
+      <span id="bet-status">غير مفعل (صح = +3 / غلط = -2)</span>
+    </div>
+
+    <!-- Cards Container -->
+    <div class="cards-container">
+      <!-- Option A -->
+      <div class="choice-card-wrapper">
+        <div id="card-a" class="choice-card card-a" onclick="handleDirectChoice('A')">
+          <div id="text-a" class="card-text">الخيار الأول</div>
+          <div id="bar-a" class="percentage-bar"></div>
+          <div id="percent-a" class="percent-label">0%</div>
+          <div id="mystery-overlay-a" class="mystery-overlay" style="display:none;" onclick="revealMystery('A', event)">🎁🎁 صندوق مجهول! (لو فتحته هتختاره إجباري ⚠️) </div>
+        </div>
+        <button id="pred-btn-a" class="predict-badge-btn" onclick="selectPrediction('A')">
+          <span>🎯</span>
+          <span>أتوقع ده</span>
+        </button>
+      </div>
+
+      <div class="vs-badge">أو</div>
+
+      <!-- Option B -->
+      <div class="choice-card-wrapper">
+        <div id="card-b" class="choice-card card-b" onclick="handleDirectChoice('B')">
+          <div id="text-b" class="card-text">الخيار الثاني</div>
+          <div id="bar-b" class="percentage-bar"></div>
+          <div id="percent-b" class="percent-label">0%</div>
+          <div id="mystery-overlay-b" class="mystery-overlay" style="display:none;" onclick="revealMystery('B', event)">🎁🎁 صندوق مجهول! (لو فتحته هتختاره إجباري ⚠️)</div>
+        </div>
+        <button id="pred-btn-b" class="predict-badge-btn" onclick="selectPrediction('B')">
+          <span>🎯</span>
+          <span>أتوقع ده</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="prediction-result-msg" style="display:none; text-align:center; margin-top:10px; font-weight:900; font-size:0.85rem;"></div>
+
+    <!-- Micro-Comments Section -->
+    <div id="comments-section" class="comments-section">
+      <div class="comments-title">💬 فضفضة اللاعبين على السؤال ده:</div>
+      <div id="comments-list"></div>
+      <div class="comment-input-row">
+        <input type="text" id="user-comment-input" placeholder="ليه اخترت ده؟ قول في سطر...">
+        <button onclick="sendComment()">إرسال</button>
+      </div>
+    </div>
+
+    <button id="next-btn" class="next-btn" onclick="nextQuestion()">السؤال التالي ⬅️</button>
+  </div>
+
+  <!-- Screen 3: Result & Duel Comparison -->
+  <div id="result-screen" class="result-box">
+    <div id="loading-ai" style="display:none; padding: 20px 10px;">
+      <div style="font-size: 2.5rem;">🧠</div>
+      <h3 style="color: var(--accent);">جاري استجواب الذكاء الاصطناعي...</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">بنحلل نسبة تمردك وقدرتك على قراءة الناس</p>
+    </div>
+
+    <div id="result-content" style="display:none;">
+      <!-- Duel Result -->
+      <div id="duel-compatibility-card" style="display:none;" class="pill"></div>
+
+      <div class="personality-title" id="ai-title">الفيلسوف المغامر 🧭</div>
+      <div class="summary-text" id="ai-summary">تحليلك هيظهر هنا...</div>
+      <div class="pill" id="ai-superpower">⚡ القوة الخارقة: سرعة البديهة</div>
+      <div class="pill" style="border-color: rgba(239,68,68,0.3); color: #fca5a5;" id="ai-roast">⚠️ قفشة: متردد</div>
+      <div class="pill" style="border-color: #eab308; color: #fef08a;" id="ai-stats-pill">📊 بصمتك: 50% مع الناس | 50% متمرد</div>
+
+      <!-- Leaderboard submit -->
+      <div class="lb-submit-box" id="lb-submit-container">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent);">🏆 سجّل اسمك في لوحة الصدارة:</div>
+        <input type="text" id="player-name-input" placeholder="اكتب اسمك أو لقبك...">
+        <button class="lb-submit-btn" onclick="submitToLeaderboard()">حفظ نتيجتي بالصدارة</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <button class="action-btn duel-share-btn" onclick="createDuelLink()">⚔️ تحدى صاحبك بنفس أسئلتك وشوف التوافق</button>
+      <button class="action-btn whatsapp-btn" onclick="shareResult()">🚀 شارك نتيجتك على واتساب</button>
+      <button class="action-btn restart-btn" onclick="location.href = window.location.pathname">🔄 العب جولة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Leaderboard Modal -->
+<div id="lb-modal" class="modal">
+  <div class="modal-content">
+    <h3 style="margin-bottom: 12px; color: var(--accent);">🏆 أسياد الفراسة وقراءة الناس</h3>
+    <div id="lb-list">جاري التحميل...</div>
+    <button style="width:100%; margin-top:14px; padding:10px; background:#334155; color:#fff; border:none; border-radius:10px; cursor:pointer;" onclick="closeLeaderboardModal()">إغلاق</button>
+  </div>
+</div>
+
+<!-- Suggest Modal -->
+<div id="suggest-modal" class="modal">
+  <div class="modal-content">
+    <h3 style="margin-bottom: 12px;">💡 اقترح سؤال</h3>
+    <input type="text" id="sug-a" placeholder="الخيار الأول..." style="width:100%; padding:10px; background:#0b0f19; border:1px solid #334155; border-radius:8px; color:#fff; margin-bottom:8px;">
+    <input type="text" id="sug-b" placeholder="الخيار الثاني..." style="width:100%; padding:10px; background:#0b0f19; border:1px solid #334155; border-radius:8px; color:#fff; margin-bottom:12px;">
+    <div style="display:flex; gap:8px;">
+      <button style="flex:1; padding:10px; background:var(--accent); color:#000; font-weight:700; border:none; border-radius:8px; cursor:pointer;" onclick="submitSuggestion()">إرسال</button>
+      <button style="flex:1; padding:10px; background:#334155; color:#fff; border:none; border-radius:8px; cursor:pointer;" onclick="closeSuggestModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 🔴 ضع رابط الـ Web App الخاص بك هنا 🔴
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6iPE4WJlsSemkDrkHBm66HVk7t1BK3IY4kUwF5F7UkrDWiKL86aqyQYfyY14bb9cBkQ/exec";
+
+  // Web Audio Context (مؤثرات صوتية داخلية)
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+    try {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e){}
+  }
+  function playSuccessSound() {
+    playBeep(523, 'triangle', 0.1);
+    setTimeout(() => playBeep(659, 'triangle', 0.1), 100);
+    setTimeout(() => playBeep(784, 'triangle', 0.2), 200);
+  }
+  function playFailSound() {
+    playBeep(300, 'sawtooth', 0.15);
+    setTimeout(() => playBeep(220, 'sawtooth', 0.25), 150);
+  }
+
+  // المتغيرات
+  let allQuestions = [];
+  let currentQuestions = [];
+  let allComments = [];
+  let leaderboardData = [];
+  let currentMode = 'funny';
+  let currentIndex = 0;
+  let predictionScore = 0;
+  let userHistory = [];
+  let isAnswered = false;
+  let selectedPrediction = null;
+  let isBetting = false;
+  let myAnswersList = [];
+
+  // إحصائيات التمرد والقطيع
+  let sheepCount = 0;
+  let wolfCount = 0;
+
+  // Duel Mode
+  let isDuel = false;
+  let challengerName = "";
+  let challengerChoices = [];
+
+  // 20s Panic Timer
+  let timeLeft = 20;
+  let timerInterval = null;
+  const TIMER_TOTAL = 20;
+  const CIRCLE_CIRCUMFERENCE = 113;
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    parseDuelParams();
+    await fetchInitialData();
+  });
+
+  function parseDuelParams() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('duel')) {
+      try {
+        const decoded = JSON.parse(atob(params.get('duel')));
+        isDuel = true;
+        challengerName = decoded.name || "صاحبك";
+        challengerChoices = decoded.choices || [];
+        const duelBanner = document.getElementById('duel-info');
+        duelBanner.style.display = 'block';
+        duelBanner.innerText = `⚔️ أنت داخل تحدي ضد: ${challengerName}! هل دماغكم واحدة؟`;
+      } catch(e) {
+        console.error("Invalid duel link", e);
+      }
+    }
+  }
+
+  async function fetchInitialData() {
+    try {
+      const res = await fetch(APPS_SCRIPT_URL);
+      const result = await res.json();
+      if (result.status === "success") {
+        allQuestions = result.questions || [];
+        leaderboardData = result.leaderboard || [];
+        allComments = result.comments || [];
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  async function startGame(mode) {
+    initAudio();
+    currentMode = mode;
+    currentIndex = 0;
+    predictionScore = 0;
+    sheepCount = 0;
+    wolfCount = 0;
+    userHistory = [];
+    myAnswersList = [];
+
+    if (allQuestions.length === 0) await fetchInitialData();
+    currentQuestions = allQuestions.filter(q => q.mode === mode);
+    if (currentQuestions.length === 0) currentQuestions = allQuestions;
+    if (currentQuestions.length === 0) return alert("تعذر تحميل الأسئلة من الشيت.");
+
+    if (!isDuel) currentQuestions.sort(() => Math.random() - 0.5);
+
+    document.getElementById('modes-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+    loadQuestion();
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timeLeft = TIMER_TOTAL;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+
+      if (timeLeft <= 5 && timeLeft > 0) {
+        playBeep(600 + (5 - timeLeft) * 100, 'sine', 0.05);
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        handleTimeOut();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    document.getElementById('timer-text').innerText = timeLeft;
+    const circle = document.getElementById('timer-circle');
+    const offset = CIRCLE_CIRCUMFERENCE - (timeLeft / TIMER_TOTAL) * CIRCLE_CIRCUMFERENCE;
+    circle.style.strokeDashoffset = offset;
+    circle.style.stroke = timeLeft <= 5 ? 'var(--danger)' : 'var(--accent)';
+  }
+
+  function handleTimeOut() {
+    if (isAnswered) return;
+    triggerScreenShake();
+    playFailSound();
+    alert("⏳ خلص الـ 20 ثانية ومقررتش! سجّلناك متردد ومتهرب 🏃‍♂️");
+    handleDirectChoice(Math.random() > 0.5 ? 'A' : 'B', true);
+  }
+
+  function triggerScreenShake() {
+    const el = document.getElementById('main-container');
+    el.classList.add('shaking');
+    setTimeout(() => el.classList.remove('shaking'), 350);
+  }
+
+  function toggleBet() {
+    if (isAnswered) return;
+    initAudio();
+    isBetting = !isBetting;
+    const btn = document.getElementById('bet-btn');
+    const status = document.getElementById('bet-status');
+    if (isBetting) {
+      btn.classList.add('active');
+      status.innerText = '🔥 مفعل (+3 لو صح / -2 لو غلط)';
+      playBeep(880, 'triangle', 0.1);
+    } else {
+      btn.classList.remove('active');
+      status.innerText = 'غير مفعل (صح = +3 / غلط = -2)';
+    }
+  }
+
+  function loadQuestion() {
+    isAnswered = false;
+    selectedPrediction = null;
+    isBetting = false;
+    const btn = document.getElementById('bet-btn');
+    btn.classList.remove('active');
+    document.getElementById('bet-status').innerText = 'غير مفعل (صح = +3 / غلط = -2)';
+
+    const q = currentQuestions[currentIndex];
+    const totalQ = Math.min(10, currentQuestions.length);
+
+    document.getElementById('question-counter').innerText = `${currentIndex + 1} / ${totalQ}`;
+    document.getElementById('score-counter').innerText = `${predictionScore} 🎯`;
+    document.getElementById('text-a').innerText = q.a;
+    document.getElementById('text-b').innerText = q.b;
+
+    // صندوق مجهول عشوائي
+    const isMysteryA = (Math.random() < 0.25 && currentIndex > 1);
+    const textAEl = document.getElementById('text-a');
+    const overlayA = document.getElementById('mystery-overlay-a');
+    if (isMysteryA) {
+      textAEl.classList.add('mystery-card');
+      overlayA.style.display = 'flex';
+    } else {
+      textAEl.classList.remove('mystery-card');
+      overlayA.style.display = 'none';
+    }
+
+    document.getElementById('card-a').style.borderColor = 'rgba(239,68,68,0.4)';
+    document.getElementById('card-b').style.borderColor = 'rgba(59,130,246,0.4)';
+    document.getElementById('pred-btn-a').className = 'predict-badge-btn';
+    document.getElementById('pred-btn-b').className = 'predict-badge-btn';
+    document.getElementById('bar-a').style.width = '0%';
+    document.getElementById('bar-b').style.width = '0%';
+    document.getElementById('percent-a').style.display = 'none';
+    document.getElementById('percent-b').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('prediction-result-msg').style.display = 'none';
+    document.getElementById('comments-section').style.display = 'none';
+
+    startTimer();
+  }
+
+  function revealAndForceChoose(choice, e) {
+  e.stopPropagation(); // منع أي نقرات تانية
+  if (isAnswered) return;
+
+  initAudio();
+  // صوت حماسي لفتح الصندوق
+  playBeep(880, 'triangle', 0.2);
+  triggerScreenShake();
+
+  // كشف النص وإزالة الغموض
+  document.getElementById('text-' + choice.toLowerCase()).classList.remove('mystery-card');
+  document.getElementById('mystery-overlay-' + choice.toLowerCase()).style.display = 'none';
+
+  // تسجيله كاختيار إجباري وتمرير أنه صندوق غامض (isMystery = true)
+  handleDirectChoice(choice, false, true);
+}
+
+  function selectPrediction(opt) {
+    if (isAnswered) return;
+    initAudio();
+    playBeep(550, 'sine', 0.08);
+    selectedPrediction = opt;
+    document.getElementById('pred-btn-a').className = 'predict-badge-btn' + (opt === 'A' ? ' selected' : '');
+    document.getElementById('pred-btn-b').className = 'predict-badge-btn' + (opt === 'B' ? ' selected' : '');
+  }
+
+  function handleDirectChoice(chosen, isTimeout = false, isMystery = false) {
+  if (isAnswered) return;
+  isAnswered = true;
+  clearInterval(timerInterval);
+  initAudio();
+
+  document.getElementById('text-a').classList.remove('mystery-card');
+  document.getElementById('text-b').classList.remove('mystery-card');
+  document.getElementById('mystery-overlay-a').style.display = 'none';
+  document.getElementById('mystery-overlay-b').style.display = 'none';
+
+  const q = currentQuestions[currentIndex];
+  const ratioA = q.ratioA;
+  const ratioB = 100 - ratioA;
+  const majority = ratioA >= 50 ? 'A' : 'B';
+
+  if (chosen === majority) {
+    sheepCount++;
+  } else {
+    wolfCount++;
+  }
+  updateRebelMeter();
+
+  myAnswersList.push({ id: q.id, choice: chosen });
+  
+  // حفظ بيانات السؤال بالتفصيل
+  userHistory.push({
+    question: `${q.a} ضد ${q.b}`,
+    chosenOption: chosen === 'A' ? q.a : q.b,
+    isRebel: chosen !== majority,
+    isTimeout: isTimeout,
+    isMystery: isMystery
+  });
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'vote', questionId: q.id, choice: chosen })
+  }).catch(e => console.log(e));
+
+  if (chosen === 'A') document.getElementById('card-a').style.borderColor = '#fff';
+  if (chosen === 'B') document.getElementById('card-b').style.borderColor = '#fff';
+
+  const msg = document.getElementById('prediction-result-msg');
+  if (selectedPrediction) {
+    if (selectedPrediction === majority) {
+      const gain = isBetting ? 3 : 1;
+      predictionScore += gain;
+      playSuccessSound();
+      msg.innerHTML = `<span style="color:#22c55e;">🔥 توقعك صح! (+${gain} نقطة)</span>`;
+    } else {
+      const loss = isBetting ? 2 : 0;
+      predictionScore = Math.max(0, predictionScore - loss);
+      triggerScreenShake();
+      playFailSound();
+      msg.innerHTML = `<span style="color:#ef4444;">😅 توقعك غلط! ${isBetting ? '(-2 نقطة)' : ''}</span>`;
+    }
+    msg.style.display = 'block';
+  } else {
+    playBeep(450, 'triangle', 0.1);
+  }
+  document.getElementById('score-counter').innerText = `${predictionScore} 🎯`;
+
+  document.getElementById('bar-a').style.width = `${ratioA}%`;
+  document.getElementById('bar-b').style.width = `${ratioB}%`;
+  document.getElementById('percent-a').innerText = `${ratioA}%`;
+  document.getElementById('percent-b').innerText = `${ratioB}%`;
+  document.getElementById('percent-a').style.display = 'block';
+  document.getElementById('percent-b').style.display = 'block';
+
+  displayCommentsForCurrentQuestion(q.id);
+  document.getElementById('next-btn').style.display = 'block';
+}
+  function updateRebelMeter() {
+    const total = sheepCount + wolfCount;
+    if (total === 0) return;
+    const sheepPct = Math.round((sheepCount / total) * 100);
+    const wolfPct = 100 - sheepPct;
+    document.getElementById('sheep-fill').style.width = `${sheepPct}%`;
+    document.getElementById('wolf-fill').style.width = `${wolfPct}%`;
+    document.getElementById('sheep-label').innerText = `🐑 مع الناس: ${sheepPct}%`;
+    document.getElementById('wolf-label').innerText = `🐺 متمرد: ${wolfPct}%`;
+  }
+
+  function displayCommentsForCurrentQuestion(qId) {
+    const list = document.getElementById('comments-list');
+    list.innerHTML = '';
+    const qComments = allComments.filter(c => String(c.qId) === String(qId)).slice(-2);
+    if (qComments.length > 0) {
+      qComments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment-bubble';
+        div.innerText = `💬 "${c.text}"`;
+        list.appendChild(div);
+      });
+    } else {
+      list.innerHTML = '<div style="font-size:0.75rem; color:#64748b;">لسه مفيش تعليقات، كن أول من يفضفض!</div>';
+    }
+    document.getElementById('comments-section').style.display = 'block';
+  }
+
+  async function sendComment() {
+    const input = document.getElementById('user-comment-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const q = currentQuestions[currentIndex];
+    const choice = myAnswersList[myAnswersList.length - 1].choice;
+
+    allComments.push({ qId: q.id, choice: choice, text: text });
+    displayCommentsForCurrentQuestion(q.id);
+    input.value = '';
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'comment', questionId: q.id, choice: choice, text: text })
+    }).catch(e => console.log(e));
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    const totalQ = Math.min(10, currentQuestions.length);
+    if (currentIndex < totalQ) {
+      loadQuestion();
+    } else {
+      finishGameAndAnalyze();
+    }
+  }
+
+  async function finishGameAndAnalyze() {
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('loading-ai').style.display = 'block';
+    document.getElementById('result-content').style.display = 'none';
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'analyze',
+          answers: userHistory,
+          predictionScore: predictionScore,
+          sheepRate: Math.round((sheepCount / 10) * 100)
+        })
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.message);
+      renderResult(data);
+    } catch (e) {
+      renderResult({
+        title: "الذئب المنفرد 🐺",
+        summary: "شخصيتك مش بتمشي مع التيار، قراراتك طالعة من قناعاتك ومش فارق معاك الناس بتفكر ازاي.",
+        superpower: "ثبات انفعالي وجرأة في اتخاذ قرارات عكس الكل",
+        roast: "عنيد ومبتقتنعش بسهولة حتى لو الكل مجمع على رأي"
+      });
+    }
+  }
+
+  function renderResult(data) {
+    document.getElementById('loading-ai').style.display = 'none';
+    document.getElementById('result-content').style.display = 'block';
+    playSuccessSound();
+
+    document.getElementById('ai-title').innerText = data.title;
+    document.getElementById('ai-summary').innerText = data.summary;
+    document.getElementById('ai-superpower').innerText = `⚡ القوة الخارقة: ${data.superpower}`;
+    document.getElementById('ai-roast').innerText = `⚠️ قفشة: ${data.roast}`;
+
+    const sheepPct = Math.round((sheepCount / 10) * 100);
+    document.getElementById('ai-stats-pill').innerText = `📊 بصمتك: ${sheepPct}% مع الناس | ${100 - sheepPct}% متمرد`;
+
+    if (isDuel && challengerChoices.length > 0) {
+      let matchCount = 0;
+      const compareTotal = Math.min(challengerChoices.length, myAnswersList.length);
+      for (let i = 0; i < compareTotal; i++) {
+        if (myAnswersList[i] && myAnswersList[i].choice === challengerChoices[i]) matchCount++;
+      }
+      const matchPct = Math.round((matchCount / compareTotal) * 100);
+      const duelCard = document.getElementById('duel-compatibility-card');
+      duelCard.style.display = 'block';
+      duelCard.style.borderColor = '#ec4899';
+      duelCard.style.color = '#fbcfe8';
+      duelCard.innerHTML = `🤝 <strong>نسبة التوافق مع ${challengerName}: ${matchPct}%</strong> (${matchPct >= 70 ? 'دماغكم واحدة في كل حاجة 🔥' : 'انتوا عكس بعض تماماً 💥'})`;
+    }
+  }
+
+  function createDuelLink() {
+    const name = prompt("اكتب اسمك عشان صاحبك يعرف مين بيتحداه:") || "صاحبك";
+    const choicesOnly = myAnswersList.map(a => a.choice);
+    const payload = btoa(JSON.stringify({ name: name, choices: choicesOnly }));
+    const duelUrl = `${window.location.origin}${window.location.pathname}?duel=${payload}`;
+    const text = `⚔️ أنا ${name} بتحداك في لعبة "لو خيّروك"! تعال نشوف نسبة التوافق بيننا وهل دماغنا واحدة ولا لأ:\n${duelUrl}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  }
+
+  async function submitToLeaderboard() {
+    const name = document.getElementById('player-name-input').value.trim();
+    if (!name) return alert("اكتب اسمك الأول!");
+    const title = document.getElementById('ai-title').innerText;
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'save_score', name: name, score: predictionScore, title: title })
+      });
+      alert("عاش! تم تسجيل نتيجتك في لوحة الصدارة بنجاح 🏆");
+      document.getElementById('lb-submit-container').style.display = 'none';
+      fetchInitialData();
+    } catch(e) {
+      alert("حدث خطأ في التسجيل، جرب تاني.");
+    }
+  }
+
+  function openLeaderboardModal() {
+    const list = document.getElementById('lb-list');
+    list.innerHTML = '';
+    if (leaderboardData.length === 0) {
+      list.innerHTML = '<div style="text-align:center; color:#64748b;">لا يوجد متصدرين حتى الآن، كن الأول!</div>';
+    } else {
+      leaderboardData.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'leaderboard-item';
+        row.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="leaderboard-rank">#${index + 1}</span>
+            <div>
+              <div style="font-weight:700;">${item.name}</div>
+              <div style="font-size:0.75rem; color:#94a3b8;">${item.title}</div>
+            </div>
+          </div>
+          <div style="font-weight:900; color:var(--accent);">${item.score} 🎯</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+    document.getElementById('lb-modal').style.display = 'flex';
+  }
+  function closeLeaderboardModal() { document.getElementById('lb-modal').style.display = 'none'; }
+
+  function shareResult() {
+    const title = document.getElementById('ai-title').innerText;
+    const text = `طلعت شخصيتي "${title}" في لعبة "لو خيّروك" بالذكاء الاصطناعي! 🔥 جرب اللعبة واعرف نتيجتك:`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + window.location.href)}`, '_blank');
+  }
+
+  function openSuggestModal() { document.getElementById('suggest-modal').style.display = 'flex'; }
+  function closeSuggestModal() { document.getElementById('suggest-modal').style.display = 'none'; }
+  async function submitSuggestion() {
+    const optA = document.getElementById('sug-a').value.trim();
+    const optB = document.getElementById('sug-b').value.trim();
+    if (!optA || !optB) return alert("اكتب الخيارين الأول!");
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'suggest', optA: optA, optB: optB, mode: currentMode })
+    });
+    alert("تم إرسال اقتراحك بنجاح 🔥");
+    closeSuggestModal();
+  }
+</script>
+</body>
+</html>
