@@ -804,7 +804,7 @@
 
   function shareResult() {
     const title = document.getElementById('ai-title').innerText;
-    const text = `طلعت شخصيتي "${title}" في لعبة "لو خيّروك" بالذكاء الاصطناعي! 🔥 جرب اللعبة واعرف نتيجتك:`;
+    const text = `طلعت شخصيتي "${title}" في لعبة "لو خيّروك" وتحليل شخصيتك بالذكاء الاصطناعي! 🔥 جرب اللعبة واعرف نتيجتك:`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + window.location.href)}`, '_blank');
   }
 
